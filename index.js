@@ -22,10 +22,12 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
     const jobsCollection = client.db("careerCode").collection("jobs");
+    const applicationsCollection = client
+      .db("careerCode")
+      .collection("applications");
 
     // Get Jobs Collection
     app.get("/jobs", async (req, res) => {
@@ -39,6 +41,14 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await jobsCollection.findOne(query);
+      res.send(result);
+    });
+
+    // Job Application Related Api's
+    app.post("/applications", async (req, res) => {
+      const application = req.body;
+      console.log(application);
+      const result = await applicationsCollection.insertOne(application);
       res.send(result);
     });
 
